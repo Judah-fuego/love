@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter to Loved Ones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffe4e1;
+            margin: 50px;
+        }
+        h1 {
+            color: #c2185b;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #ff4081;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e91e63;
+        }
+    </style>
+</head>
+<body>
+    <h1>Letter to a Loved One</h1>
+    <div class="container">
+        <form id="letterlove-form">
+            <label for="recipient">Who is the letter for?</label><br>
+            <select id="recipient" name="recipient" required>
+                <option value="">Select a Recipient</option>
+                <option value="mother">Mother</option>
+                <option value="father">Father</option>
+                <option value="grandmother">Grandmother</option>
+                <option value="special_someone">Special Someone</option>
+                <option value="siblings">Siblings</option>
+            </select><br><br>
+
+            <label for="letter-text">Write your letter:</label><br>
+            <textarea id="letter-text" name="letter-text" rows="6" required placeholder="Type your letter..."></textarea><br><br>
+
+            <button type="submit">Craft Letter</button>
+        </form>
+        <div id="letter-result"></div>
+    </div>
+
+    <script>
+        document.getElementById('letterlove-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // Fetch the selected recipient and text
+            let recipient = document.getElementById('recipient').value;
+            let text = document.getElementById('letter-text').value;
+
+            // Simulate crafting a letter (you can replace this with actual text generation logic)
+            let result = `Your heartfelt letter to ${recipient}: "${text}" is ready!`;
+            document.getElementById('letter-result').innerText = result;
+        });
+    </script​⬤

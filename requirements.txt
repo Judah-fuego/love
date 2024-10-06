@@ -1,0 +1,5 @@
+
+pip install torch==2.2.0
+pip install transformers==4.29.2  # Adjust if you find conflicts
+pip install flask==3.0.0            # If you want a specific version of Flask
+pip install tokenizers==0.14.1      # Adjust version based on compatibility

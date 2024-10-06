@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flirt Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8d7da;
+            margin: 50px;
+        }
+        h1 {
+            color: #c2185b;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #ff4081;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e91e63;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flirty Text Generator</h1>
+    <div class="container">
+        <form id="flirtgen-form">
+            <label for="flirt-mode">Choose your flirting mode:</label><br>
+            <select id="flirt-mode" name="flirt-mode" required>
+                <option value="">Select a Mode</option>
+                <option value="playful">Playful</option>
+                <option value="charming">Charming</option>
+                <option value="teasing">Teasing</option>
+                <option value="sweet">Sweet</option>
+                <option value="confident">Confident</option>
+            </select><br><br>
+
+            <label for="flirt-text">Enter your text:</label><br>
+            <textarea id="flirt-text" name="flirt-text" rows="4" required placeholder="Type your message..."></textarea><br><br>
+
+            <button type="submit">Generate Flirty Response</button>
+        </form>
+        <div id="flirt-result"></div>
+    </div>
+
+    <script>
+        document.getElementById('flirtgen-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // Fetch the selected mode and text
+            let mode = document.getElementById('flirt-mode').value;
+            let text = document.getElementById('flirt-text').value;
+
+            // Simulate generating a response (you can replace this with actual model inference)
+            let result = `Your flirty ${mode} response for "${text}" is: ...`;
+            document.getElementById('flirt-result').innerText = result;
+        });
+    </script>
+</body>
+</html>

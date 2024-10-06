@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flirty Text Classifier</title>
+    <style>
+        /* Background with animated hearts */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffe6f0;
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+        }
+
+        /* Heart Animation */
+        .heart {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 105, 180, 0.6);
+            transform: rotate(45deg);
+            animation: float 10s infinite;
+            border-radius: 10px;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(45deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        /* Generate multiple hearts */
+        /* You can add as many as you like */
+        .heart:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; }
+        .heart:nth-child(2) { left: 20%; animation-duration: 10s; animation-delay: 2s; }
+        .heart:nth-child(3) { left: 30%; animation-duration: 14s; animation-delay: 4s; }
+        .heart:nth-child(4) { left: 40%; animation-duration: 11s; animation-delay: 1s; }
+        .heart:nth-child(5) { left: 50%; animation-duration: 13s; animation-delay: 3s; }
+        .heart:nth-child(6) { left: 60%; animation-duration: 15s; animation-delay: 5s; }
+        .heart:nth-child(7) { left: 70%; animation-duration: 9s; animation-delay: 0s; }
+        .heart:nth-child(8) { left: 80%; animation-duration: 16s; animation-delay: 2s; }
+        .heart:nth-child(9) { left: 90%; animation-duration: 12s; animation-delay: 4s; }
+
+        /* Header Styling */
+        header {
+            position: fixed;
+            top: 0;
+            
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+        }
+        .auth{
+            padding: 9px;
+            color:white;
+            background-color: #9a323b;
+            border-radius: 10px;
+            
+        }
+
+        h1 {
+            color: #d63384;
+            text-shadow: 2px 2px #ffb6c1;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* Hamburger Menu Styling */
+        .hamburger {
+            width: 30px;
+            height: 25px;
+            margin-right: 50px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger div {
+            width: 100%;
+            height: 4px;
+            background-color: #d63384;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Side Navigation Menu */
+        .side-nav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            z-index: 3;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .side-nav a {
+            padding: 10px 30px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #d63384;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .side-nav a:hover {
+            background-color: #ffe6f0;
+        }
+
+        .side-nav .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 24px;
+            margin-left: 50px;
+            color: #d63384;
+            cursor: pointer;
+        }
+
+        /* Prediction Form Styling */
+        #prediction-form {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            max-width: 600px;
+            margin: 40px auto 30px auto; /* Adjusted margin-top to accommodate fixed header */
+            position: relative;
+            z-index: 1;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            resize: none;
+            border: 2px solid #ffb6c1;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #d63384;
+            outline: none;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 20px;
+            font-size: 18px;
+            background-color: #d63384;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #c2185b;
+        }
+
+        #result {
+            margin-top: 25px;
+            font-size: 20px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #result.success {
+            color: #28a745;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        #result.error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Live Character Count */
+        #char-count {
+            display: block;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            #prediction-form {
+                padding: 20px;
+                margin: 150px 20px 30px 20px; /* Adjusted margin-top for fixed header */
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .side-nav a {
+                font-size: 18px;
+            }
+
+            .hamburger {
+                width: 25px;
+                height: 20px;
+            }
+
+            .hamburger div {
+                height: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+   
+
+
+    <!-- Header with Hamburger Menu -->
+    <header>
+        <img 
+        alt="logo"
+        src="../static/love-high-resolution-logo.svg"
+        width="60px"/>
+        <div>
+            <a class="auth" href="/login">Login</a>
+            <a class="auth" href="/logout">Logout</a>
+        </div>
+       
+
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </header>
+
+    <br>
+   
+
+
+    <!-- Animated Hearts -->
+    
+
+    <br>
+    <!-- Side Navigation Menu -->
+    <div id="sideNav" class="side-nav">
+        <a href="javascript:void(0)" class="close-btn" id="closeBtn">&times;</a>
+        <a href="/letterlove">Letter Love</a>
+        <a href="/flirtgen">FlirtGen</a>
+    </div>
+
+    <h1 style="margin-top: 50px; text-align: center;">Flirty Text Classifier 💖</h1>
+
+
+    <!-- Prediction Form -->
+    <div id="prediction-form">
+        <form id="form">
+            <label for="text">Enter your text (max 150 characters):</label><br><br>
+            <textarea id="text" name="text" rows="4" maxlength="150" required placeholder="Type your message here..."></textarea>
+            <small id="char-count">150 characters remaining</small><br><br>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+
+    <div class="heart"></div>
+    <div class="heart"></div>
+    <div class="heart"></div>
+    <div class="heart"></div>
+    <div class="heart"></div>
+    <div class="heart"></div>
+    <div class="heart"></div>
+    <div class="heart"></div>
+    <div class="heart"></div>
+    <!-- Confetti JS Library -->
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // Hamburger Menu Functionality
+        const hamburger = document.getElementById('hamburger');
+        const sideNav = document.getElementById('sideNav');
+        const closeBtn = document.getElementById('closeBtn');
+
+        hamburger.addEventListener('click', () => {
+            sideNav.style.width = '250px';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            sideNav.style.width = '0';
+        });
+
+        // Live Character Count
+        const textarea = document.getElementById('text');
+        const charCount = document.getElementById('char-count');
+
+        textarea.addEventListener('input', () => {
+            const remaining = 150 - textarea.value.length;
+            charCount.textContent = `${remaining} characters remaining`;
+            if (remaining < 20) {
+                charCount.style.color = '#dc3545';
+            } else {
+                charCount.style.color = '#6c757d';
+            }
+        });
+
+        // Form Submission and Prediction Handling
+        const form = document.getElementById('form');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const text = textarea.value.trim();
+            
+            // Clear previous result
+            resultDiv.textContent = '';
+            resultDiv.className = '';
+            resultDiv.style.display = 'none';
+
+            if (!text) {
+                resultDiv.textContent = 'Please enter some text.';
+                resultDiv.classList.add('error');
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            if (text.length > 150) {
+                resultDiv.textContent = 'Text exceeds 150 characters.';
+                resultDiv.classList.add('error');
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            // Show processing message
+            resultDiv.textContent = 'Processing...';
+            resultDiv.classList.add('success');
+            resultDiv.style.display = 'block';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.textContent = `Prediction: ${data.prediction}`;
+                    if (data.prediction === "Flirty") {
+                        triggerConfetti();
+                    }
+                    resultDiv.classList.add('success');
+                } else {
+                    resultDiv.textContent = data.error || 'An error occurred.';
+                    resultDiv.classList.add('error');
+                }
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.textContent = 'An error occurred while processing your request.';
+                resultDiv.classList.add('error');
+                resultDiv.style.display = 'block';
+            }
+        });
+
+        // Function to trigger confetti
+        function triggerConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+    </script>
+</body>
+</html>
